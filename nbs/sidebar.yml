@@ -1,0 +1,5 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - 2023-11-21-hello-world.ipynb
