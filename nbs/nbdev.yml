@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "aiblog"
+  site-url: "https://38leinaD.github.io/aiblog"
+  description: "Ramblings in AI"
+  repo-branch: main
+  repo-url: "https://github.com/38leinaD/aiblog"
