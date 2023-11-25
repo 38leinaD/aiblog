@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "2023-11-22-java.html",
+    "href": "2023-11-22-java.html",
+    "title": "Using Java in Jupyter",
+    "section": "",
+    "text": "Installation of the IJava kernel was very simple. Steps:\ncurl -LO https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip\nunzip -d ijava ijava-1.3.0.zip\ncd ijava\npython install.py --sys-prefix\njupyter kernelspec list which\nOr from source:\ngit clone https://github.com/frankfliu/IJava.git\ncd IJava/\n./gradlew installKernel\nNow i can start jupyter lab as normal and start a Java notebook. As an example, I can run below code.\n\nimport org.knowm.xchart.*;\nimport org.knowm.xchart.style.colors.*;\nimport java.awt.Color;\n\ndouble[] xData = new double[] { 0.0, 1.0, 2.0 };\ndouble[] yData = new double[] { 2.0, 1.0, 0.0 };\nXYChart chart = QuickChart.getChart(\"Sample Chart\", \"X\", \"Y\", \"y(x)\", xData, yData);\nchart.getStyler().setChartBackgroundColor(Color.WHITE);\n\nBitmapEncoder.getBufferedImage(chart);"
+  },
+  {
+    "objectID": "2023-11-21-hello-world.html",
+    "href": "2023-11-21-hello-world.html",
+    "title": "Hello World",
+    "section": "",
+    "text": "This is my first post using jupyter notebooks for blogging.\n\n1+1\n\n2\n\n\n\nimport matplotlib.pyplot as plt\nplt.plot([1,2]);\n\n\n\n\nAs a sidenote, my WSL environment was destroyed a few days ago by a Windows update. It is back to normal now after this suggested fix of deleting an old registry key."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "aiblog",
+    "section": "",
+    "text": "This is still work in progress just so I already have a place to document my learnings in form of a diary. Maybe eventually it will replace my main blog."
+  },
+  {
+    "objectID": "2023-11-25-blink.html",
+    "href": "2023-11-25-blink.html",
+    "title": "Blink Camera",
+    "section": "",
+    "text": "I have been tinkering with our new Blink camera to see if I can access it from Python; possibliy to use it for some Image-classification testing. Meet Blinkpy.\n\n!pip install -q blinkpy\n\n\nimport asyncio\nimport os.path\nfrom aiohttp import ClientSession\nfrom blinkpy.blinkpy import Blink\nfrom blinkpy.auth import Auth\nfrom blinkpy.helpers.util import json_load\n\nasync def inital_connect():\n    blink = Blink(session=ClientSession())\n    await blink.start()\n    return blink\n\nasync def connect(credentials):\n    blink = Blink()\n    auth = Auth(await json_load(credentials))\n    blink.auth = auth\n    await blink.start()\n    return blink\n\nFirst time you use it, it will ask for credentials and an MFA code. When you have done this once and saved the credentials, you will not have to reenter them.\n\nCREDENTIALS_FILE = \"./blink.credentials.txt\"\nif not os.path.isfile(\"./blink.credentials.txt\"):\n    blink = await inital_connect()\n    await blink.save(CREDENTIALS_PATH)\nelse:\n    blink = await connect(CREDENTIALS_FILE)\n\nNow you can access your cameras. Lets list them first:\n\nfor name, camera in blink.cameras.items():\n    print(name)                   # Name of the camera\n    print(camera.attributes)      # Print available attributes of camera\n\nLet’s take a picture from one of the cameras and write it to a file.\n\ncamera = blink.cameras['Froschi']\nawait camera.snap_picture()\nawait blink.refresh()\nawait camera.image_to_file(\"img.jpg\")\n\nLet’s print the image.\n\nfrom PIL import Image\npil_im = Image.open(\"img.jpg\")\npil_im"
+  }
+]
